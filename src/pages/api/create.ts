@@ -21,7 +21,6 @@ function pickOne(list: string[]): string {
 
 const bodySchema = z.object({
   url: z.string().url(),
-  expires: z.date().optional(),
 });
 
 const prisma = new PrismaClient();
@@ -46,6 +45,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.json({ id });
   } catch (error) {
-    res.status(400).json({ error: `invalid body` });
+    res.status(400).json({ error: `Invalid url` });
   }
 };

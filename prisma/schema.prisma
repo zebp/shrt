@@ -13,5 +13,4 @@ generator client {
 model Redirect {
   id String @id
   url String
-  expires DateTime?
 }

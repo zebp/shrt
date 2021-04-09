@@ -1,10 +1,11 @@
-import redirect from 'nextjs-redirect';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { Heading, VStack } from '@chakra-ui/layout';
+import React, { useEffect } from 'react';
+import { Center, Spinner } from '@chakra-ui/react';
 
 type RedirectProps = {
   url: string | null;
-  expired: boolean;
 };
 
 export async function getServerSideProps(
@@ -18,31 +19,36 @@ export async function getServerSideProps(
       id,
     },
   });
-
-  const expired = record?.expires
-    ? record?.expires.getTime() / 1000 > Date.now() / 1000
-    : false;
-
   return {
     props: {
       url: record?.url || null,
-      expired,
     },
   };
 }
 
-export default function Redirect({ url, expired }: RedirectProps) {
-  if (expired) {
-    return <p>Expired!</p>;
-  }
-
+export default function Redirect({ url }: RedirectProps) {
   if (!url) {
-    return <div>Redirect not found</div>;
+    return (
+      <Center width="100%" height="100%">
+        <VStack spacing="30px">
+          <Heading color="gray.600">404 :(</Heading>
+        </VStack>
+      </Center>
+    );
   }
 
-  const RedirectComponent = redirect(url, {
-    statusCode: 302,
-  });
+  useEffect(() => {
+    setTimeout(() => {
+      window.location.href = url;
+    }, 500);
+  }, []);
 
-  return <RedirectComponent>Redirecting...</RedirectComponent>;
+  return (
+    <Center width="100%" height="100%">
+      <VStack spacing="30px">
+        <Heading color="gray.600">Redirecting</Heading>
+        <Spinner size="lg" color="blue.400" />
+      </VStack>
+    </Center>
+  );
 }
