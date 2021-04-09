@@ -34,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = bodySchema.parse(req.body);
     const { id } = await prisma.redirect.create({
       data: {
-        id: base64url(Buffer.from(randomFillSync(new Uint8Array(16)))),
+        id: base64url(Buffer.from(randomFillSync(new Uint8Array(4)))),
         ...body,
       },
       select: {
