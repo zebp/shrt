@@ -1,15 +1,11 @@
 {
-  "name": "typescript-nextjs-starter",
-  "description": "A TypeScript starter for Next.js that includes all you need to build amazing projects",
+  "name": "shrt",
+  "description": "A url shortener in NextJS",
   "version": "1.0.0",
-  "private": true,
-  "author": "João Pedro Schmitz <oi@joaopedro.cc> (joaopedro.cc)",
+  "private": false,
+  "author": "Zeb Piasecki (zeb@zebulon.dev)",
   "license": "MIT",
-  "keywords": [
-    "nextjs",
-    "starter",
-    "typescript"
-  ],
+  "keywords": [],
   "scripts": {
     "dev": "next",
     "build": "next build",
