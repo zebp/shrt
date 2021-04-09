@@ -1,6 +1,8 @@
 import * as z from 'zod';
+import { randomFillSync } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import base64url from 'base64url';
 
 export interface SuccessfulCreateResponse {
   success: true;
@@ -15,23 +17,6 @@ export interface UnsuccessfulCreateResponse {
 export type CreateResponse =
   | SuccessfulCreateResponse
   | UnsuccessfulCreateResponse;
-
-// Just a list of words for us to use for name generation.
-const { nouns }: { nouns: string[] } = require(`nouns`);
-const adjectives: string[] = require(`adjectives`);
-
-/**
- * @returns a random entry from the list
- */
-function pickOne(list: string[]): string {
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const index = Math.floor(Math.random() * list.length);
-    const word = list[index].toLowerCase();
-
-    if (!word.includes(`-`)) return word;
-  }
-}
 
 const bodySchema = z.object({
   url: z.string().url(),
@@ -49,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = bodySchema.parse(req.body);
     const { id } = await prisma.redirect.create({
       data: {
-        id: `${pickOne(adjectives)}${pickOne(adjectives)}${pickOne(nouns)}`,
+        id: base64url(Buffer.from(randomFillSync(new Uint8Array(16)))),
         ...body,
       },
       select: {
