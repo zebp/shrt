@@ -1,7 +1,7 @@
+import React, { useEffect } from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { Heading, VStack } from '@chakra-ui/layout';
-import React, { useEffect } from 'react';
 import { Center, Spinner } from '@chakra-ui/react';
 
 type RedirectProps = {
@@ -19,6 +19,7 @@ export async function getServerSideProps(
       id,
     },
   });
+
   return {
     props: {
       url: record?.url || null,

@@ -1,6 +1,20 @@
+import * as z from 'zod';
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import * as z from 'zod';
+
+export interface SuccessfulCreateResponse {
+  success: true;
+  id: string;
+}
+
+export interface UnsuccessfulCreateResponse {
+  success: false;
+  error: string;
+}
+
+export type CreateResponse =
+  | SuccessfulCreateResponse
+  | UnsuccessfulCreateResponse;
 
 // Just a list of words for us to use for name generation.
 const { nouns }: { nouns: string[] } = require(`nouns`);
@@ -43,8 +57,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    res.json({ id });
+    res.json({ success: true, id });
   } catch (error) {
-    res.status(400).json({ error: `Invalid url` });
+    res.status(400).json({ success: false, error: `Invalid url` });
   }
 };

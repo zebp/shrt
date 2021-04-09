@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Center,
   Heading,
@@ -6,30 +7,30 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
-
-const REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
-
-interface CreateResponse {
-  error?: string;
-  id?: string;
-}
+import { CreateResponse } from './api/create';
 
 export default function Home() {
   const toast = useToast();
   const [url, setUrl] = useState(``);
   const [loading, setLoading] = useState(false);
 
-  const isInvalid = !REGEX.test(url);
+  const isInvalid = (() => {
+    try {
+      // eslint-disable-next-line no-new
+      new URL(url);
+      return false;
+    } catch (e) {
+      return true;
+    }
+  })();
 
   const submit = async () => {
     setUrl(``);
     setLoading(true);
 
-    const data = { url };
-    const resData: CreateResponse = await fetch(`/api/create`, {
+    const data: CreateResponse = await fetch(`/api/create`, {
       method: `POST`,
-      body: JSON.stringify(data),
+      body: JSON.stringify({ url }),
       headers: {
         'Content-Type': `application/json`,
       },
@@ -37,19 +38,17 @@ export default function Home() {
 
     setLoading(false);
 
-    if (resData.id) {
-      await navigator.clipboard.writeText(`${window.location}${resData.id}`);
+    if (data.success) {
+      await navigator.clipboard.writeText(`${window.location}${data.id}`);
 
       toast({
         description: `Redirect link copied to clipboard`,
         duration: 5000,
         status: `success`,
       });
-    }
-
-    if (resData.error) {
+    } else {
       toast({
-        description: resData.error,
+        description: data.error,
         duration: 5000,
         status: `error`,
       });
