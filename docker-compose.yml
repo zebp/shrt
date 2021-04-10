@@ -5,5 +5,9 @@ services:
     environment:
         POSTGRES_USER: shrt
         POSTGRES_PASSWORD: shrt
+  shrt:
+    build: .
     ports:
-        - "5432:5432"
+      - "3000:3000"
+    env_file:
+      - .env
