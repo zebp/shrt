@@ -12,6 +12,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build
+RUN yarn run prisma generate
 
 # Production image, copy all the files and run next
 FROM node:alpine AS runner
